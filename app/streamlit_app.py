@@ -3,8 +3,8 @@ import numpy as np
 import cv2
 import json
 import joblib
-import tempfile
 import os
+import gdown
 from pathlib import Path
 from skimage.feature import hog
 
@@ -18,9 +18,32 @@ st.set_page_config(
 )
 
 # ======================================================
+# ดึงโมเดลจาก Google Drive
+# ======================================================
+# ⚠️ ใส่ File ID ของแต่ละไฟล์ที่นี่
+FILE_IDS = {
+    "ensemble_model.pkl":      "14IwYo6RVPtB1kRwg4inbfkdBR4pp_mt0",
+    "scaler.pkl":              "ใ1OCEeQm6RrCwfEvciujFiCGwIIU11h3oy",
+    "nn_model.keras":          "1LRpQQZsoYsyFsj635KIT-zwtz_vPDBUg",
+    "dataset2_label_map.json": "1WzItnWy3KbBMuZojmeD7mWjzn1JKn9ew",
+}
+
+MODELS_PATH = Path("models")
+MODELS_PATH.mkdir(exist_ok=True)
+
+def download_models():
+    for filename, file_id in FILE_IDS.items():
+        dest = MODELS_PATH / filename
+        if not dest.exists():
+            url = f"https://drive.google.com/uc?id={file_id}"
+            gdown.download(url, str(dest), quiet=False)
+
+with st.spinner("กำลังโหลดโมเดลจาก Google Drive..."):
+    download_models()
+
+# ======================================================
 # โหลดโมเดล (cache เพื่อไม่ต้องโหลดซ้ำทุกครั้ง)
 # ======================================================
-MODELS_PATH = Path(__file__).parent.parent / 'models'
 DATASET_NAME = 'dataset2'
 
 @st.cache_resource
@@ -117,7 +140,6 @@ if page == "📖 อธิบาย ML Model":
     """)
 
     st.header("3. ทฤษฎีของแต่ละโมเดล")
-
     col1, col2, col3 = st.columns(3)
     with col1:
         st.subheader("🌲 Random Forest")
@@ -228,7 +250,7 @@ Dense(15, activation='softmax')   ← 15 classes
         st.markdown("""
         - Unfreeze ทุก layer
         - Train ทั้งโมเดลพร้อมกัน
-        - Learning rate = 1e-5 (ต่ำมากเพื่อไม่ destroy pretrained weights)
+        - Learning rate = 1e-5
         - 20 epochs + EarlyStopping
         - ได้ accuracy สูงสุด
         """)
@@ -258,7 +280,7 @@ elif page == "🧪 ทดสอบ ML Model":
         st.error(f"โหลดโมเดลไม่สำเร็จ: {e}")
         st.stop()
 
-    st.markdown("### อัปโหลดรูปกีฬา แล้วโมเดลจะทำนายประเภทให้")
+    st.markdown("### อัปโหลดรูปลูกบอลกีฬา แล้วโมเดลจะทำนายประเภทให้")
     st.caption("รองรับไฟล์: JPG, JPEG, PNG")
 
     uploaded = st.file_uploader("เลือกรูปภาพ", type=['jpg','jpeg','png'], key='ml_upload')
@@ -267,16 +289,13 @@ elif page == "🧪 ทดสอบ ML Model":
         col1, col2 = st.columns([1, 1])
         with col1:
             st.image(uploaded, caption="รูปที่อัปโหลด", use_container_width=True)
-
         with col2:
             with st.spinner("กำลังทำนาย..."):
                 img_bytes = uploaded.read()
                 pred_class, confidence, proba = predict_ml(img_bytes, ensemble, scaler, idx_to_class)
-
             st.markdown("### ผลการทำนาย")
             st.success(f"**{pred_class.replace('_', ' ').title()}**")
             st.metric("Confidence", f"{confidence*100:.1f}%")
-
             st.markdown("### Top 5 Predictions")
             top5_idx = np.argsort(proba)[::-1][:5]
             for i, idx in enumerate(top5_idx):
@@ -298,7 +317,7 @@ elif page == "🧪 ทดสอบ Neural Network":
         st.error(f"โหลดโมเดลไม่สำเร็จ: {e}")
         st.stop()
 
-    st.markdown("### อัปโหลดรูปกีฬา แล้วโมเดลจะทำนายประเภทให้")
+    st.markdown("### อัปโหลดรูปลูกบอลกีฬา แล้วโมเดลจะทำนายประเภทให้")
     st.caption("รองรับไฟล์: JPG, JPEG, PNG")
 
     uploaded = st.file_uploader("เลือกรูปภาพ", type=['jpg','jpeg','png'], key='nn_upload')
@@ -307,16 +326,13 @@ elif page == "🧪 ทดสอบ Neural Network":
         col1, col2 = st.columns([1, 1])
         with col1:
             st.image(uploaded, caption="รูปที่อัปโหลด", use_container_width=True)
-
         with col2:
             with st.spinner("กำลังทำนาย..."):
                 img_bytes = uploaded.read()
                 pred_class, confidence, proba = predict_nn(img_bytes, nn_model, idx_to_class_nn)
-
             st.markdown("### ผลการทำนาย")
             st.success(f"**{pred_class.replace('_', ' ').title()}**")
             st.metric("Confidence", f"{confidence*100:.1f}%")
-
             st.markdown("### Top 5 Predictions")
             top5_idx = np.argsort(proba)[::-1][:5]
             for i, idx in enumerate(top5_idx):
