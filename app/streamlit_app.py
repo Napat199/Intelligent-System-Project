@@ -23,7 +23,7 @@ st.set_page_config(
 # ⚠️ ใส่ File ID ของแต่ละไฟล์ที่นี่
 FILE_IDS = {
     "ensemble_model.pkl":      "14IwYo6RVPtB1kRwg4inbfkdBR4pp_mt0",
-    "scaler.pkl":              "ใ1OCEeQm6RrCwfEvciujFiCGwIIU11h3oy",
+    "scaler.pkl":              "1OCEeQm6RrCwfEvciujFiCGwIIU11h3oy",
     "nn_model.keras":          "1LRpQQZsoYsyFsj635KIT-zwtz_vPDBUg",
     "dataset2_label_map.json": "1WzItnWy3KbBMuZojmeD7mWjzn1JKn9ew",
 }
