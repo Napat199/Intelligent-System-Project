@@ -3,7 +3,7 @@ tensorflow
 scikit-learn
 scikit-image
 xgboost
-opencv-python
+opencv-python-headless
 joblib
 numpy
 pandas
