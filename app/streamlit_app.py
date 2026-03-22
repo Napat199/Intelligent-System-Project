@@ -93,15 +93,15 @@ def predict_nn(img_bytes, model, idx_to_class):
 # ======================================================
 # Sidebar Navigation
 # ======================================================
-st.sidebar.title("🏆 Sports Classification")
+st.sidebar.title("Sports Classification")
 st.sidebar.markdown("---")
 page = st.sidebar.radio(
     "เลือกหน้า",
     [
-        "📖 อธิบาย ML Model",
-        "📖 อธิบาย Neural Network",
-        "🧪 ทดสอบ ML Model",
-        "🧪 ทดสอบ Neural Network"
+        "อธิบาย ML Model",
+        "อธิบาย Neural Network",
+        "ทดสอบ ML Model",
+        "ทดสอบ Neural Network"
     ]
 )
 st.sidebar.markdown("---")
@@ -110,8 +110,8 @@ st.sidebar.info("**Dataset:** Sports Balls (15 classes)\n\n**ML Accuracy:** 34.1
 # ======================================================
 # หน้า 1: อธิบาย ML Model
 # ======================================================
-if page == "📖 อธิบาย ML Model":
-    st.title("📖 ML Ensemble Model")
+if page == "อธิบาย ML Model":
+    st.title("ML Ensemble Model")
     st.markdown("---")
 
     st.header("1. Dataset และการเตรียมข้อมูล")
@@ -142,7 +142,7 @@ if page == "📖 อธิบาย ML Model":
     st.header("3. ทฤษฎีของแต่ละโมเดล")
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.subheader("🌲 Random Forest")
+        st.subheader("Random Forest")
         st.markdown("""
         - สร้าง Decision Tree หลายต้น (200 ต้น)
         - แต่ละต้นเห็น subset ของ features
@@ -150,7 +150,7 @@ if page == "📖 อธิบาย ML Model":
         - ทนต่อ overfitting ได้ดี
         """)
     with col2:
-        st.subheader("📐 SVM")
+        st.subheader("SVM")
         st.markdown("""
         - หา hyperplane ที่แบ่ง class ได้ดีที่สุด
         - ใช้ RBF kernel สำหรับข้อมูลที่ไม่ linear
@@ -158,7 +158,7 @@ if page == "📖 อธิบาย ML Model":
         - เปิด probability=True เพื่อใช้ใน ensemble
         """)
     with col3:
-        st.subheader("⚡ XGBoost")
+        st.subheader("XGBoost")
         st.markdown("""
         - สร้าง Tree แบบ Gradient Boosting
         - แต่ละต้นแก้ error ของต้นก่อนหน้า
@@ -191,8 +191,8 @@ if page == "📖 อธิบาย ML Model":
 # ======================================================
 # หน้า 2: อธิบาย Neural Network
 # ======================================================
-elif page == "📖 อธิบาย Neural Network":
-    st.title("📖 Neural Network — EfficientNetB0")
+elif page == "อธิบาย Neural Network":
+    st.title("Neural Network — EfficientNetB0")
     st.markdown("---")
 
     st.header("1. Dataset และการเตรียมข้อมูล")
@@ -269,13 +269,13 @@ Dense(15, activation='softmax')   ← 15 classes
 # ======================================================
 # หน้า 3: ทดสอบ ML Model
 # ======================================================
-elif page == "🧪 ทดสอบ ML Model":
-    st.title("🧪 ทดสอบ ML Ensemble Model")
+elif page == "ทดสอบ ML Model":
+    st.title("ทดสอบ ML Ensemble Model")
     st.markdown("---")
 
     try:
         ensemble, scaler, idx_to_class = load_ml_models()
-        st.success("โหลดโมเดลสำเร็จ ✅")
+        st.success("โหลดโมเดลสำเร็จ")
     except Exception as e:
         st.error(f"โหลดโมเดลไม่สำเร็จ: {e}")
         st.stop()
@@ -306,13 +306,13 @@ elif page == "🧪 ทดสอบ ML Model":
 # ======================================================
 # หน้า 4: ทดสอบ Neural Network
 # ======================================================
-elif page == "🧪 ทดสอบ Neural Network":
-    st.title("🧪 ทดสอบ Neural Network (EfficientNetB0)")
+elif page == "ทดสอบ Neural Network":
+    st.title("ทดสอบ Neural Network (EfficientNetB0)")
     st.markdown("---")
 
     try:
         nn_model, idx_to_class_nn = load_nn_model()
-        st.success("โหลดโมเดลสำเร็จ ✅")
+        st.success("โหลดโมเดลสำเร็จ")
     except Exception as e:
         st.error(f"โหลดโมเดลไม่สำเร็จ: {e}")
         st.stop()
